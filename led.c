@@ -20,6 +20,9 @@
 
 #include "ecrt.h"
 #include "slaves.h" // generated with the "ethercat cstruct" command
+#include "EL1014.h"
+#include "EL1018.h"
+#include "EL2008.h"
 #include "EL2202.h"
 #include "EL1252.h"
 #include "EL2252.h"
@@ -68,18 +71,58 @@ static uint8_t *domain1_pd = NULL;
 #define Beckhoff_EK1100 0x00000002, 0x044c2c52
 
 // Define a struct for each slave to hold values read or written
-static El2202 el2202; // First slave
-static El1252 el1252_1; // Second slave
-static El1252 el1252_2; // Third slave
-static El2252 el2252; // fourth slave
+// static El2202 el2202; // First slave
+static El1014 el1014_1; // First slave
+static El1014 el1014_2; // Second slave
+static El1018 el1018; // Third slave
+static El2008 el2008; // fourth slave
+//static El1252 el1252_1; // Second slave
+//static El1252 el1252_2; // Third slave
+//static El2252 el2252; // fourth slave
 
 const static ec_pdo_entry_reg_t domain1_regs[] = {
-    // Slave 1: EL2202
+#if 0
+	// Slave 1: EL2202
     {Slave1Pos, Beckhoff_EL2202, 0x7000, 0x01, &el2202.offset_out[0], &el2202.bit_pos_out[0]},
     {Slave1Pos, Beckhoff_EL2202, 0x7000, 0x02, &el2202.offset_tristate[0], &el2202.bit_pos_tristate[0]},
     {Slave1Pos, Beckhoff_EL2202, 0x7010, 0x01, &el2202.offset_out[1], &el2202.bit_pos_out[1]},
     {Slave1Pos, Beckhoff_EL2202, 0x7010, 0x02, &el2202.offset_tristate[1], &el2202.bit_pos_tristate[1]},
+#endif
 
+    // Slave 1: EL1014
+    {Slave1Pos, Beckhoff_EL1014, 0x6000, 0x01, &el1014_1.offset_in[0], &el1014_1.bit_pos_in[0]},
+    {Slave1Pos, Beckhoff_EL1014, 0x6010, 0x01, &el1014_1.offset_in[1], &el1014_1.bit_pos_in[1]},
+	{Slave1Pos, Beckhoff_EL1014, 0x6020, 0x01, &el1014_1.offset_in[2], &el1014_1.bit_pos_in[2]},
+	{Slave1Pos, Beckhoff_EL1014, 0x6030, 0x01, &el1014_1.offset_in[3], &el1014_1.bit_pos_in[3]},
+
+    // Slave 2: EL1014
+    {Slave2Pos, Beckhoff_EL1014, 0x6000, 0x01, &el1014_2.offset_in[0], &el1014_2.bit_pos_in[0]},
+    {Slave2Pos, Beckhoff_EL1014, 0x6010, 0x01, &el1014_2.offset_in[1], &el1014_2.bit_pos_in[1]},
+	{Slave2Pos, Beckhoff_EL1014, 0x6020, 0x01, &el1014_2.offset_in[2], &el1014_2.bit_pos_in[2]},
+	{Slave2Pos, Beckhoff_EL1014, 0x6030, 0x01, &el1014_2.offset_in[3], &el1014_2.bit_pos_in[3]},
+
+    // Slave 3: EL1018
+    {Slave3Pos, Beckhoff_EL1018, 0x6000, 0x01, &el1018.offset_in[0], &el1018.bit_pos_in[0]},
+    {Slave3Pos, Beckhoff_EL1018, 0x6010, 0x01, &el1018.offset_in[1], &el1018.bit_pos_in[1]},
+	{Slave3Pos, Beckhoff_EL1018, 0x6020, 0x01, &el1018.offset_in[2], &el1018.bit_pos_in[2]},
+	{Slave3Pos, Beckhoff_EL1018, 0x6030, 0x01, &el1018.offset_in[3], &el1018.bit_pos_in[3]},
+    {Slave3Pos, Beckhoff_EL1018, 0x6040, 0x01, &el1018.offset_in[4], &el1018.bit_pos_in[4]},
+    {Slave3Pos, Beckhoff_EL1018, 0x6050, 0x01, &el1018.offset_in[5], &el1018.bit_pos_in[5]},
+	{Slave3Pos, Beckhoff_EL1018, 0x6060, 0x01, &el1018.offset_in[6], &el1018.bit_pos_in[6]},
+	{Slave3Pos, Beckhoff_EL1018, 0x6070, 0x01, &el1018.offset_in[7], &el1018.bit_pos_in[7]},
+
+    // Slave 4: EL2008
+    {Slave4Pos, Beckhoff_EL2008, 0x7000, 0x01, &el2008.offset_out[0], &el2008.bit_pos_out[0]},
+    {Slave4Pos, Beckhoff_EL2008, 0x7010, 0x01, &el2008.offset_out[1], &el2008.bit_pos_out[1]},
+	{Slave4Pos, Beckhoff_EL2008, 0x7020, 0x01, &el2008.offset_out[2], &el2008.bit_pos_out[2]},
+	{Slave4Pos, Beckhoff_EL2008, 0x7030, 0x01, &el2008.offset_out[3], &el2008.bit_pos_out[3]},
+    {Slave4Pos, Beckhoff_EL2008, 0x7040, 0x01, &el2008.offset_out[4], &el2008.bit_pos_out[4]},
+    {Slave4Pos, Beckhoff_EL2008, 0x7050, 0x01, &el2008.offset_out[5], &el2008.bit_pos_out[5]},
+	{Slave4Pos, Beckhoff_EL2008, 0x7060, 0x01, &el2008.offset_out[6], &el2008.bit_pos_out[6]},
+	{Slave4Pos, Beckhoff_EL2008, 0x7070, 0x01, &el2008.offset_out[7], &el2008.bit_pos_out[7]},
+
+
+#if 0
     // Slave 2: EL1252
     {Slave2Pos, Beckhoff_EL1252, 0x6000, 0x01, &el1252_1.offset_in[0], &el1252_1.bit_pos_in[0]},
     {Slave2Pos, Beckhoff_EL1252, 0x6000, 0x02, &el1252_1.offset_in[1], &el1252_1.bit_pos_in[1]},
@@ -107,7 +150,7 @@ const static ec_pdo_entry_reg_t domain1_regs[] = {
     {Slave4Pos, Beckhoff_EL2252, 0x7000, 0x02, &el2252.offset_tristate[0], &el2252.bit_pos_tristate[0]},
     {Slave4Pos, Beckhoff_EL2252, 0x7010, 0x01, &el2252.offset_out[1], &el2252.bit_pos_out[1]},
     {Slave4Pos, Beckhoff_EL2252, 0x7010, 0x02, &el2252.offset_tristate[1], &el2252.bit_pos_tristate[1]},
-
+#endif
     {}
 };
 
@@ -201,24 +244,31 @@ static void read_sdo(void)
 // Do the write for the EL2202: alternately blink the LEDs
 // (Note: Setting a tristate bit to 1 turns the devices LED yellow and disables the output.
 static void write_process_data_el2202() {
-    EC_WRITE_BIT(domain1_pd + el2202.offset_tristate[0], el2202.bit_pos_tristate[0], 0x00);
-    EC_WRITE_BIT(domain1_pd + el2202.offset_tristate[1], el2202.bit_pos_tristate[1], 0x00);
-    EC_WRITE_BIT(domain1_pd + el2202.offset_out[0], el2202.bit_pos_out[0], blink ? 0x01 : 0x00);
-    EC_WRITE_BIT(domain1_pd + el2202.offset_out[1], el2202.bit_pos_out[1], blink ? 0x00 : 0x01);
+    //EC_WRITE_BIT(domain1_pd + el2202.offset_tristate[0], el2202.bit_pos_tristate[0], 0x00);
+    //EC_WRITE_BIT(domain1_pd + el2202.offset_tristate[1], el2202.bit_pos_tristate[1], 0x00);
+    //EC_WRITE_BIT(domain1_pd + el2202.offset_out[0], el2202.bit_pos_out[0], blink ? 0x01 : 0x00);
+    //EC_WRITE_BIT(domain1_pd + el2202.offset_out[1], el2202.bit_pos_out[1], blink ? 0x00 : 0x01);
 }
 
 // Do the write for the EL2252: alternately blink the LEDs
 static void write_process_data_el2252() {
-    EC_WRITE_BIT(domain1_pd + el2252.offset_tristate[0], el2252.bit_pos_tristate[0], 0x00);
-    EC_WRITE_BIT(domain1_pd + el2252.offset_tristate[1], el2252.bit_pos_tristate[1], 0x00);
-    EC_WRITE_BIT(domain1_pd + el2252.offset_out[0], el2252.bit_pos_out[0], blink ? 0x01 : 0x00);
-    EC_WRITE_BIT(domain1_pd + el2252.offset_out[1], el2252.bit_pos_out[1], blink ? 0x00 : 0x01);
+//    EC_WRITE_BIT(domain1_pd + el2252.offset_tristate[0], el2252.bit_pos_tristate[0], 0x00);
+//    EC_WRITE_BIT(domain1_pd + el2252.offset_tristate[1], el2252.bit_pos_tristate[1], 0x00);
+//    EC_WRITE_BIT(domain1_pd + el2252.offset_out[0], el2252.bit_pos_out[0], blink ? 0x01 : 0x00);
+//    EC_WRITE_BIT(domain1_pd + el2252.offset_out[1], el2252.bit_pos_out[1], blink ? 0x00 : 0x01);
+}
+
+// Do the write for the EL2252: alternately blink the LEDs
+static void write_process_data_el2008() {
+    EC_WRITE_BIT(domain1_pd + el2008.offset_out[0], el2008.bit_pos_out[0], blink ? 0x01 : 0x00);
+    EC_WRITE_BIT(domain1_pd + el2008.offset_out[1], el2008.bit_pos_out[1], blink ? 0x00 : 0x01);
 }
 
 /****************************************************************************/
 static void write_process_data() {
     write_process_data_el2202();
     write_process_data_el2252();
+    write_process_data_el2008();
 }
 
 /****************************************************************************/
@@ -247,10 +297,14 @@ static void cyclic_task()
         check_master_state();
 
         // check for islave configuration state(s) (optional)
-        check_slave_config_states("Slave1", el2202.config, &el2202.config_state);
-        check_slave_config_states("Slave2", el1252_1.config, &el1252_1.config_state);
-        check_slave_config_states("Slave3", el1252_2.config, &el1252_2.config_state);
-        check_slave_config_states("Slave4", el2252.config, &el2252.config_state);
+        //check_slave_config_states("Slave1", el2202.config, &el2202.config_state);
+        check_slave_config_states("Slave1", el1014_1.config, &el1014_1.config_state);
+        check_slave_config_states("Slave2", el1014_2.config, &el1014_2.config_state);
+        check_slave_config_states("Slave3", el1018.config, &el1018.config_state);
+        check_slave_config_states("Slave4", el2008.config, &el2008.config_state);
+//        check_slave_config_states("Slave2", el1252_1.config, &el1252_1.config_state);
+//        check_slave_config_states("Slave3", el1252_2.config, &el1252_2.config_state);
+//        check_slave_config_states("Slave4", el2252.config, &el2252.config_state);
 
 #if SDO_ACCESS
         // read process data SDO
@@ -363,10 +417,14 @@ int main(int argc, char **argv)
 #endif
 
     printf("Configuring PDOs...\n");
-    if (configure_pdo(&el2202.config, slave_1_syncs, Slave1Pos, Beckhoff_EL2202)) return -1;
-    if (configure_pdo(&el1252_1.config, slave_2_syncs, Slave2Pos, Beckhoff_EL1252)) return -1;
-    if (configure_pdo(&el1252_2.config, slave_3_syncs, Slave3Pos, Beckhoff_EL1252)) return -1;
-    if (configure_pdo(&el2252.config, slave_4_syncs, Slave4Pos, Beckhoff_EL2252)) return -1;
+    //if (configure_pdo(&el2202.config, slave_1_syncs, Slave1Pos, Beckhoff_EL2202)) return -1;
+    if (configure_pdo(&el1014_1.config, slave_1_syncs, Slave1Pos, Beckhoff_EL1014)) return -1;
+    if (configure_pdo(&el1014_2.config, slave_2_syncs, Slave2Pos, Beckhoff_EL1014)) return -1;
+    if (configure_pdo(&el1018.config, slave_3_syncs, Slave3Pos, Beckhoff_EL1018)) return -1;
+    if (configure_pdo(&el2008.config, slave_4_syncs, Slave4Pos, Beckhoff_EL2008)) return -1;
+    //if (configure_pdo(&el1252_1.config, slave_2_syncs, Slave2Pos, Beckhoff_EL1252)) return -1;
+    //if (configure_pdo(&el1252_2.config, slave_3_syncs, Slave3Pos, Beckhoff_EL1252)) return -1;
+    //if (configure_pdo(&el2252.config, slave_4_syncs, Slave4Pos, Beckhoff_EL2252)) return -1;
 
     // Create configuration for bus coupler
     sc = ecrt_master_slave_config(master, BusCouplerPos, Beckhoff_EK1100);
