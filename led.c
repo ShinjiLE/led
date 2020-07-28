@@ -124,8 +124,8 @@ const static ec_pdo_entry_reg_t domain1_regs[] = {
 	{Slave4Pos, Beckhoff_EL2008, 0x7060, 0x01, &el2008.offset_out[6], &el2008.bit_pos_out[6]},
 	{Slave4Pos, Beckhoff_EL2008, 0x7070, 0x01, &el2008.offset_out[7], &el2008.bit_pos_out[7]},
 
-    {Slave4Pos, Beckhoff_EL1502, 0x6020, 0x11, &el1502.offset_counter[0], &el1502.bit_pos_counter[0]},
-    //{Slave4Pos, Beckhoff_EL1502, 0x7010, 0x01, &el1502.offset_counter[1], &el1502.bit_pos_counter[1]},
+    {Slave5Pos, Beckhoff_EL1502, 0x6020, 0x11, &el1502.offset_counter[0], &el1502.bit_pos_counter[0]},
+    //{Slave5Pos, Beckhoff_EL1502, 0x7010, 0x01, &el1502.offset_counter[1], &el1502.bit_pos_counter[1]},
 
 #if 0
     // Slave 2: EL1252
