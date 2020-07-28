@@ -22,6 +22,7 @@
 #include "slaves.h" // generated with the "ethercat cstruct" command
 #include "EL1014.h"
 #include "EL1018.h"
+#include "EL1502.h"
 #include "EL2008.h"
 #include "EL2202.h"
 #include "EL1252.h"
@@ -63,6 +64,7 @@ static uint8_t *domain1_pd = NULL;
 #define Slave2Pos 0, 2
 #define Slave3Pos 0, 3
 #define Slave4Pos 0, 4
+#define Slave5Pos 0, 5
 
 // This demo application is hard wired to use the following devices (in this order). 
 // See the generated slaves.h file.
@@ -76,6 +78,7 @@ static El1014 el1014_1; // First slave
 static El1014 el1014_2; // Second slave
 static El1018 el1018; // Third slave
 static El2008 el2008; // fourth slave
+static El1502 el1502; // fifth slave
 //static El1252 el1252_1; // Second slave
 //static El1252 el1252_2; // Third slave
 //static El2252 el2252; // fourth slave
@@ -121,6 +124,8 @@ const static ec_pdo_entry_reg_t domain1_regs[] = {
 	{Slave4Pos, Beckhoff_EL2008, 0x7060, 0x01, &el2008.offset_out[6], &el2008.bit_pos_out[6]},
 	{Slave4Pos, Beckhoff_EL2008, 0x7070, 0x01, &el2008.offset_out[7], &el2008.bit_pos_out[7]},
 
+    {Slave4Pos, Beckhoff_EL1502, 0x6020, 0x11, &el1502.offset_counter[0], &el1502.bit_pos_counter[0]},
+    //{Slave4Pos, Beckhoff_EL1502, 0x7010, 0x01, &el1502.offset_counter[1], &el1502.bit_pos_counter[1]},
 
 #if 0
     // Slave 2: EL1252
@@ -302,6 +307,7 @@ static void cyclic_task()
         check_slave_config_states("Slave2", el1014_2.config, &el1014_2.config_state);
         check_slave_config_states("Slave3", el1018.config, &el1018.config_state);
         check_slave_config_states("Slave4", el2008.config, &el2008.config_state);
+        check_slave_config_states("Slave5", el1502.config, &el1502.config_state);
 //        check_slave_config_states("Slave2", el1252_1.config, &el1252_1.config_state);
 //        check_slave_config_states("Slave3", el1252_2.config, &el1252_2.config_state);
 //        check_slave_config_states("Slave4", el2252.config, &el2252.config_state);
@@ -422,6 +428,7 @@ int main(int argc, char **argv)
     if (configure_pdo(&el1014_2.config, slave_2_syncs, Slave2Pos, Beckhoff_EL1014)) return -1;
     if (configure_pdo(&el1018.config, slave_3_syncs, Slave3Pos, Beckhoff_EL1018)) return -1;
     if (configure_pdo(&el2008.config, slave_4_syncs, Slave4Pos, Beckhoff_EL2008)) return -1;
+    if (configure_pdo(&el1502.config, slave_5_syncs, Slave5Pos, Beckhoff_EL1502)) return -1;
     //if (configure_pdo(&el1252_1.config, slave_2_syncs, Slave2Pos, Beckhoff_EL1252)) return -1;
     //if (configure_pdo(&el1252_2.config, slave_3_syncs, Slave3Pos, Beckhoff_EL1252)) return -1;
     //if (configure_pdo(&el2252.config, slave_4_syncs, Slave4Pos, Beckhoff_EL2252)) return -1;
