@@ -267,6 +267,7 @@ static void write_process_data_el2252() {
 static void write_process_data_el2008() {
     EC_WRITE_BIT(domain1_pd + el2008.offset_out[0], el2008.bit_pos_out[0], blink ? 0x01 : 0x00);
     EC_WRITE_BIT(domain1_pd + el2008.offset_out[1], el2008.bit_pos_out[1], blink ? 0x00 : 0x01);
+    EC_WRITE_BIT(domain1_pd + el2008.offset_out[1], el2008.bit_pos_out[6], blink ? 0x00 : 0x01);
 }
 
 /****************************************************************************/
