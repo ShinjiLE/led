@@ -6,6 +6,8 @@
  * Revision number: 0x00100000
  */
 
+#define EL1502_SLAVE_5_DUAL_CNTR	1
+
 ec_pdo_entry_info_t slave_1_pdo_entries[] = {
     {0x6000, 0x01, 1}, /* Input */
     {0x6010, 0x01, 1}, /* Input */
@@ -121,7 +123,7 @@ ec_sync_info_t slave_4_syncs[] = {
  * Product code:    0x05de3052
  * Revision number: 0x00120000
  */
-
+#if !EL1502_SLAVE_5_DUAL_CNTR
 ec_pdo_entry_info_t slave_5_pdo_entries[] = {
     {0x7020, 0x01, 1}, /* Enable output functions */
     {0x7020, 0x02, 1}, /* Set output */
@@ -154,7 +156,63 @@ ec_sync_info_t slave_5_syncs[] = {
     {3, EC_DIR_INPUT, 1, slave_5_pdos + 1, EC_WD_DISABLE},
     {0xff}
 };
+#else
+ec_pdo_entry_info_t slave_5_pdo_entries[] = {
+/*CH1 RXPDO*/
+    {0x7000, 0x01, 1}, /* Enable output functions */
+    {0x7000, 0x02, 1}, /* Set output */
+    {0x7000, 0x03, 1}, /* Set counter */
+    {0x7000, 0x04, 1}, /* Inhibit counter */
+    {0x0000, 0x00, 12}, /* Gap */
+    {0x7000, 0x11, 32}, /* Set counter value */
+/*CH1 TXPDO*/
+    {0x6000, 0x01, 1}, /* Output functions enabled */
+    {0x6000, 0x02, 1}, /* Status of output */
+    {0x6000, 0x03, 1}, /* Set counter done */
+    {0x6000, 0x04, 1}, /* Counter inhibited */
+    {0x6000, 0x00, 1}, /* 1bit align */
+    {0x6000, 0x06, 1}, /* Status of input clock */
+    {0x0000, 0x00, 7}, /* Gap */
+    {0x1c32, 0x20, 1}, /* Sync error */
+    {0x0000, 0x00, 1}, /* Gap */
+    {0x1800, 0x09, 1}, /* TxPDO Toggle */
+    {0x6000, 0x11, 32}, /* Counter value */
+	/*CH2 RXPDO*/
+	{0x7010, 0x01, 1}, /* Enable output functions */
+	{0x7010, 0x02, 1}, /* Set output */
+	{0x7010, 0x03, 1}, /* Set counter */
+	{0x7010, 0x04, 1}, /* Inhibit counter */
+	{0x0000, 0x00, 12}, /* Gap */
+	{0x7010, 0x11, 32}, /* Set counter value */
+	/*CH2 TXPDO*/
+    {0x6010, 0x01, 1}, /* Output functions enabled */
+    {0x6010, 0x02, 1}, /* Status of output */
+    {0x6010, 0x03, 1}, /* Set counter done */
+    {0x6010, 0x04, 1}, /* Counter inhibited */
+    {0x6010, 0x00, 1}, /* 1bit align */
+    {0x6010, 0x06, 1}, /* Status of input clock */
+    {0x0000, 0x00, 7}, /* Gap */
+    {0x1c32, 0x20, 1}, /* Sync error */
+    {0x0000, 0x00, 1}, /* Gap */
+    {0x1801, 0x09, 1}, /* TxPDO Toggle */
+    {0x6010, 0x11, 32}, /* Counter value */
+};
 
+ec_pdo_info_t slave_5_pdos[] = {
+    {0x1600, 6, slave_5_pdo_entries + 0}, /* CNT RxPDO-Map */
+    {0x1a00, 11, slave_5_pdo_entries + 6}, /* CNT TxPDO-Map */
+    {0x1601, 6, slave_5_pdo_entries + 17}, /* CNT RxPDO-Map */
+    {0x1a01, 11, slave_5_pdo_entries + 23}, /* CNT TxPDO-Map */
+};
+
+ec_sync_info_t slave_5_syncs[] = {
+    {0, EC_DIR_OUTPUT, 0, NULL, EC_WD_DISABLE},
+    {1, EC_DIR_INPUT, 0, NULL, EC_WD_DISABLE},
+    {2, EC_DIR_OUTPUT, 1, slave_5_pdos + 0, EC_WD_DISABLE},
+    {3, EC_DIR_INPUT, 1, slave_5_pdos + 1, EC_WD_DISABLE},
+    {0xff}
+};
+#endif
 /* Master 0, Slave 6, "EL3022"
  * Vendor ID:       0x00000002
  * Product code:    0x0bce3052
