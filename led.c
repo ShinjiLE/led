@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#define EL1502_SLAVE_5_DUAL_CNTR	0
 /****************************************************************************/
 
 #include "ecrt.h"
@@ -124,8 +125,18 @@ const static ec_pdo_entry_reg_t domain1_regs[] = {
 	{Slave4Pos, Beckhoff_EL2008, 0x7060, 0x01, &el2008.offset_out[6], &el2008.bit_pos_out[6]},
 	{Slave4Pos, Beckhoff_EL2008, 0x7070, 0x01, &el2008.offset_out[7], &el2008.bit_pos_out[7]},
 
+#if EL1502_SLAVE_5_DUAL_CNTR
+	{Slave5Pos, Beckhoff_EL1502, 0x7000, 0x01, &el1502.offset_en_output[0], &el1502.bit_pos_en_output[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x7000, 0x04, &el1502.offset_inhibit_counter[0], &el1502.bit_pos_inhibit_counter[0]},
+    {Slave5Pos, Beckhoff_EL1502, 0x6000, 0x11, &el1502.offset_counter[0], &el1502.bit_pos_counter[0]},
+#else
+	{Slave5Pos, Beckhoff_EL1502, 0x7020, 0x01, &el1502.offset_en_output[0], &el1502.bit_pos_en_output[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x7020, 0x02, &el1502.offset_set_output[0], &el1502.bit_pos_set_output[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x7020, 0x03, &el1502.offset_set_counter[0], &el1502.bit_pos_set_counter[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x7020, 0x04, &el1502.offset_inhibit_counter[0], &el1502.bit_pos_inhibit_counter[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x7020, 0x11, &el1502.offset_set_counter_value[0], &el1502.bit_pos_set_counter_value[0]},
     {Slave5Pos, Beckhoff_EL1502, 0x6020, 0x11, &el1502.offset_counter[0], &el1502.bit_pos_counter[0]},
-    //{Slave5Pos, Beckhoff_EL1502, 0x7010, 0x01, &el1502.offset_counter[1], &el1502.bit_pos_counter[1]},
+#endif
 
 #if 0
     // Slave 2: EL1252
@@ -270,8 +281,24 @@ static void write_process_data_el2008() {
     EC_WRITE_BIT(domain1_pd + el2008.offset_out[1], el2008.bit_pos_out[6], blink ? 0x00 : 0x01);
 }
 
+static void write_process_data_el1502() {
+	static uint startup = 0;
+	if(!startup)
+	{
+		EC_WRITE_BIT(domain1_pd + el1502.offset_inhibit_counter[0], el1502.bit_pos_inhibit_counter[0], 1);
+		EC_WRITE_BIT(domain1_pd + el1502.offset_set_counter[0], el1502.bit_pos_set_counter[0], 1);
+		EC_WRITE_U32(domain1_pd + el1502.offset_set_counter_value[0],192);
+		startup=1;
+	}
+	else
+	{
+		EC_WRITE_BIT(domain1_pd + el1502.offset_inhibit_counter[0], el1502.bit_pos_inhibit_counter[0], 0);
+	}
+}
+
 /****************************************************************************/
 static void write_process_data() {
+	write_process_data_el1502();
     write_process_data_el2202();
     write_process_data_el2252();
     write_process_data_el2008();
@@ -320,11 +347,10 @@ static void cyclic_task()
 
     }
 
-#if 0
+#if 1
     // read process data
-    printf("Slave1 Out1: state %u value %u\n",
-            EC_READ_U8(domain1_pd + slave1_out1_status),
-            EC_READ_U16(domain1_pd + slave1_out1_value));
+    printf("Slave5 CNT: %u\n",
+            EC_READ_U32(domain1_pd + el1502.offset_counter[0]));
 #endif
 
     // write process data

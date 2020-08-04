@@ -6,8 +6,6 @@
  * Revision number: 0x00100000
  */
 
-#define EL1502_SLAVE_5_DUAL_CNTR	1
-
 ec_pdo_entry_info_t slave_1_pdo_entries[] = {
     {0x6000, 0x01, 1}, /* Input */
     {0x6010, 0x01, 1}, /* Input */
@@ -164,7 +162,7 @@ ec_pdo_entry_info_t slave_5_pdo_entries[] = {
     {0x7000, 0x03, 1}, /* Set counter */
     {0x7000, 0x04, 1}, /* Inhibit counter */
     {0x0000, 0x00, 12}, /* Gap */
-    {0x7000, 0x11, 32}, /* Set counter value */
+    {0x7000, 0x11, 32}, /* Set counter value */ [5]
 /*CH1 TXPDO*/
     {0x6000, 0x01, 1}, /* Output functions enabled */
     {0x6000, 0x02, 1}, /* Status of output */
@@ -176,14 +174,14 @@ ec_pdo_entry_info_t slave_5_pdo_entries[] = {
     {0x1c32, 0x20, 1}, /* Sync error */
     {0x0000, 0x00, 1}, /* Gap */
     {0x1800, 0x09, 1}, /* TxPDO Toggle */
-    {0x6000, 0x11, 32}, /* Counter value */
+    {0x6000, 0x11, 32}, /* Counter value */ [16]
 	/*CH2 RXPDO*/
 	{0x7010, 0x01, 1}, /* Enable output functions */
 	{0x7010, 0x02, 1}, /* Set output */
 	{0x7010, 0x03, 1}, /* Set counter */
 	{0x7010, 0x04, 1}, /* Inhibit counter */
 	{0x0000, 0x00, 12}, /* Gap */
-	{0x7010, 0x11, 32}, /* Set counter value */
+	{0x7010, 0x11, 32}, /* Set counter value */ [22]
 	/*CH2 TXPDO*/
     {0x6010, 0x01, 1}, /* Output functions enabled */
     {0x6010, 0x02, 1}, /* Status of output */

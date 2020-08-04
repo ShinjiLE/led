@@ -5,10 +5,20 @@
 
 // Holds values written to or read from the device
 typedef struct {
-    // Stores PDO entry's (byte-)offset in the process data. 
+    // Stores PDO entry's (byte-)offset in the process data.
+	unsigned int offset_en_output[2];
+	unsigned int offset_set_output[2];
+	unsigned int offset_set_counter[2];
+	unsigned int offset_inhibit_counter[2];
+	unsigned int offset_set_counter_value[2];
     unsigned int offset_counter[2];
 
     // Store a bit position (0-7) within the above offset
+	unsigned int bit_pos_en_output[2];
+	unsigned int bit_pos_set_output[2];
+	unsigned int bit_pos_set_counter[2];
+	unsigned int bit_pos_inhibit_counter[2];
+	unsigned int bit_pos_set_counter_value[2];
     unsigned int bit_pos_counter[2];
     
     // Stores all the 1 bit values
