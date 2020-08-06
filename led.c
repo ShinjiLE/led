@@ -135,7 +135,14 @@ const static ec_pdo_entry_reg_t domain1_regs[] = {
 	{Slave5Pos, Beckhoff_EL1502, 0x7020, 0x03, &el1502.offset_set_counter[0], &el1502.bit_pos_set_counter[0]},
 	{Slave5Pos, Beckhoff_EL1502, 0x7020, 0x04, &el1502.offset_inhibit_counter[0], &el1502.bit_pos_inhibit_counter[0]},
 	{Slave5Pos, Beckhoff_EL1502, 0x7020, 0x11, &el1502.offset_set_counter_value[0], &el1502.bit_pos_set_counter_value[0]},
-    {Slave5Pos, Beckhoff_EL1502, 0x6020, 0x11, &el1502.offset_counter[0], &el1502.bit_pos_counter[0]},
+
+	{Slave5Pos, Beckhoff_EL1502, 0x6020, 0x01, &el1502.offset_output_func_enabled[0], &el1502.bit_pos_output_func_enabled[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x6020, 0x02, &el1502.offset_output_status[0], &el1502.bit_pos_output_status[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x6020, 0x03, &el1502.offset_set_counter_done[0], &el1502.bit_pos_set_counter_done[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x6020, 0x04, &el1502.offset_counter_inhibit[0], &el1502.bit_pos_counter_inhibit[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x6020, 0x05, &el1502.offset_ud_status[0], &el1502.bit_pos_ud_status[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x6020, 0x06, &el1502.offset_clock_status[0], &el1502.bit_pos_clock_status[0]},
+	{Slave5Pos, Beckhoff_EL1502, 0x6020, 0x11, &el1502.offset_counter[0], &el1502.bit_pos_counter[0]},
 #endif
 
 #if 0

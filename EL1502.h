@@ -11,6 +11,13 @@ typedef struct {
 	unsigned int offset_set_counter[2];
 	unsigned int offset_inhibit_counter[2];
 	unsigned int offset_set_counter_value[2];
+
+    unsigned int offset_output_func_enabled[2];
+    unsigned int offset_output_status[2];
+    unsigned int offset_set_counter_done[2];
+	unsigned int offset_counter_inhibit[2];
+	unsigned int offset_ud_status[1];
+	unsigned int offset_clock_status[1];
     unsigned int offset_counter[2];
 
     // Store a bit position (0-7) within the above offset
@@ -19,8 +26,15 @@ typedef struct {
 	unsigned int bit_pos_set_counter[2];
 	unsigned int bit_pos_inhibit_counter[2];
 	unsigned int bit_pos_set_counter_value[2];
+
+    unsigned int bit_pos_output_func_enabled[2];
+    unsigned int bit_pos_output_status[2];
+    unsigned int bit_pos_set_counter_done[2];
+	unsigned int bit_pos_counter_inhibit[2];
+	unsigned int bit_pos_ud_status[1];
+	unsigned int bit_pos_clock_status[1];
     unsigned int bit_pos_counter[2];
-    
+
     // Stores all the 1 bit values
     ec_slave_config_t* config;
 
